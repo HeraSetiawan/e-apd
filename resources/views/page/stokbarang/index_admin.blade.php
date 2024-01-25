@@ -27,13 +27,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($stokBarang as $item)
+                    @foreach ($stok_area as $item)
                         <tr class="text-capitalize">
                             <td>{{ $loop->iteration }}.</td>
                             {{-- <td>{{ $item->tanggal }}</td> --}}
-                            <td>{{ $item->stokBarang->nama_barang }}</td>
-                            <td>{{ $item->jumlah_dikeluarkan }}</td>
-                            <td>{{ Auth::user()->asal_rig }}</td>
+                            <td>{{ $item->nama_barang }}</td>
+                            <td>{{ $item->qty }}</td>
+                            <td>{{ $item->lokasi}}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -42,7 +42,7 @@ Route::middleware(['auth'])->group(function(){
     });
     
 
-    // admin area
+    // --admin area--
     Route::middleware("cekRole:SS")->group(function(){
 
         Route::get('/dashboard/admin', function(){
@@ -64,11 +64,17 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/permintaan/kru/create',[PermintaanController::class, 'createKru']);
         Route::post('/permintaan',[PermintaanController::class, 'store']);
         Route::post('permintaan/terima',[PermintaanController::class,'terima'])->name('terima permintaan');
-        
+        Route::post('permintaan/kru', [PermintaanController::class, 'store_kru'])->name('pemberian apd kru');
         // stok barang
         Route::get('/stokbarang/admin', [StokBarangController::class, 'indexAdmin'])->name('stok admin');
+
+        // Riwayat Apd
+        Route::get('/riwayat/admin/apd', function(){
+            return view('');
+        });
     });
-    
+    // --end admin area--
+
     // asisten
     Route::middleware("cekRole:AS")->group(function(){
         Route::get('/permintaan/asisten',[PermintaanController::class, 'indexAsisten'])->name('permintaan asisten');

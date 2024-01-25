@@ -48,30 +48,6 @@
         </div>
         <ul class="nav  flex-column">
           
-          @if (in_array(Auth::user()->role, ["SA","SS"]))
-          <li class="nav-item">
-            <a class="nav-link {{ Request::is('karyawan*') ? 'active' : '' }}" href="{{ Auth::user()->role == "SA" ? url('karyawan') : url('karyawan/admin ') }}">
-              <span data-feather="users" class="align-text-bottom"></span>
-              Karyawan
-            </a>
-          </li>
-          @endif
-          
-          @if (Auth::user()->role === "KRU")
-            <li class="nav-item">
-              <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard/kru') }}">
-                <span data-feather="home" class="align-text-bottom"></span>
-                Dashboard
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {{ Request::is('permintaan*') ? 'active' : '' }}" aria-current="page" href="{{ url('permintaan/kru') }}">
-                <span data-feather="feather" class="align-text-bottom"></span>
-                Riwayat Permintaan
-              </a>
-            </li>
-          @endif
-
           @if (Auth::user()->role === "SA")
           <li class="nav-item">
             <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard') }}">
@@ -112,7 +88,39 @@
                 Permintaan APD
               </a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Request::is('riwayat*') ? 'active' : '' }}" href="{{ url('riwayat/admin/apd') }}">
+                <span data-feather="truck" class="align-text-bottom"></span>
+                Riwayat Permintaan APD
+              </a>
+            </li>
           @endif
+
+          @if (in_array(Auth::user()->role, ["SA","SS"]))
+          <li class="nav-item">
+            <a class="nav-link {{ Request::is('karyawan*') ? 'active' : '' }}" href="{{ Auth::user()->role == "SA" ? url('karyawan') : url('karyawan/admin ') }}">
+              <span data-feather="users" class="align-text-bottom"></span>
+              Karyawan
+            </a>
+          </li>
+          @endif
+          
+          @if (Auth::user()->role === "KRU")
+            <li class="nav-item">
+              <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard/kru') }}">
+                <span data-feather="home" class="align-text-bottom"></span>
+                Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {{ Request::is('permintaan*') ? 'active' : '' }}" aria-current="page" href="{{ url('permintaan/kru') }}">
+                <span data-feather="feather" class="align-text-bottom"></span>
+                Riwayat Permintaan
+              </a>
+            </li>
+          @endif
+
+          
 
         </ul>
 

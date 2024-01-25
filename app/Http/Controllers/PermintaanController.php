@@ -6,6 +6,8 @@ use App\Models\Permintaan;
 use App\Models\StokBarang;
 use Illuminate\Http\Request;
 use App\Models\BarangPermintaan;
+use App\Models\Karyawan;
+use App\Models\RiwayatApdKru;
 use App\Models\StokArea;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,10 +49,11 @@ class PermintaanController extends Controller
 
     public function createKru()
     {
-        $permintaan = Permintaan::where('asal_rig', $this->lokasiUser())
-                                    ->where('status', "3")->select('id')->get();
-        $stokBarang = BarangPermintaan::with('stokBarang')->whereIn('permintaan_id', $permintaan->pluck('id'))->get();
-        return view('page.stokbarang.pemberian_apd', compact('stokBarang'));
+        $stok_area = StokArea::where('lokasi', $this->lokasiUser())->get();
+        $list_kru = \App\Models\Karyawan::where('asal_rig', $this->lokasiUser())
+                                            ->where('role', 'KRU')->get();
+        // dd($list_kru);
+        return view('page.stokbarang.pemberian_apd', compact('stok_area', 'list_kru'));
     }
 
     
@@ -76,6 +79,22 @@ class PermintaanController extends Controller
 
         return redirect("/permintaan/admin")
             ->with('pesan','berhasil mengirim permintaan')
+            ->with('warna', 'success');
+    }
+
+    public function store_kru(Request $req) {
+        RiwayatApdKru::create([
+            'karyawan_id'         => $req->karyawan_id,
+            'file_permintaan_apd' => $req->file_permintaan_apd->store('dokumen/tanda terima apd'),
+        ]);
+
+        foreach ($req->id_barang as $key => $value) {
+           $stok_area = StokArea::find($value);
+            $stok_area->decrement('qty', $req->qty[$key]);
+        }
+
+        return redirect("/stokbarang/admin")
+            ->with('pesan','berhasil mengurangi stok area')
             ->with('warna', 'success');
     }
 

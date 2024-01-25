@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BarangPermintaan;
 use App\Models\Permintaan;
+use App\Models\StokArea;
 use App\Models\StokBarang;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -23,11 +24,9 @@ class StokBarangController extends Controller
     }
 
     function indexAdmin() {
-        $permintaan = Permintaan::where('asal_rig', $this->lokasiUser())
-                                    ->where('status', "3")->select('id')->get();
-        $stokBarang = BarangPermintaan::with('stokBarang')->whereIn('permintaan_id', $permintaan->pluck('id'))->get();
+        $stok_area = StokArea::where('lokasi',$this->lokasiUser())->latest()->get();
         // dd($stokBarang);
-        return view('page.stokbarang.index_admin', compact('stokBarang'));
+        return view('page.stokbarang.index_admin', compact('stok_area'));
     }
 
     /**

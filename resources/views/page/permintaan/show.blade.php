@@ -82,6 +82,11 @@
                             @endforeach
                         </ol>
                     </div>
+                    <div>
+                        @if ($item->file_pengiriman != null)
+                          <a href="{{ asset($item->file_pengiriman) }}" download class="btn btn-success"> <i class="bi-download"></i> Bon Angkut Barang</a>  
+                        @endif
+                    </div>
                     @if ($item->status == "2")
                         <form action="{{ route('terima permintaan') }}" method="post">
                             @csrf
