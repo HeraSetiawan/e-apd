@@ -1,10 +1,21 @@
 <x-template-app>
+    @php
+    switch (auth()->user()->role) {
+        case 'SS':
+            $path = '/admin';
+        break;
+        default:
+            $path = '';
+        break;
+    }   
+    @endphp
     @if(session('pesan'))
         <x-alert :pesan="session('pesan')" :warna="session('warna')" />
     @endif
+    
     <x-card judul='Data Admin'>
         <x-slot name='tombol'>
-            <a href="{{ url('/karyawan/create') }}" class="btn btn-primary rounded-pill"><i class="bi-plus"></i> Buat</a>
+                <a href='{{ url("/karyawan$path/create") }}' class="btn btn-primary rounded-pill"><i class="bi-plus"></i> Buat</a>
         </x-slot>
         <div class="table-responsive">
             <table class="table" id="dataTable">
@@ -22,7 +33,7 @@
                     </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                    @foreach ($karyawan as $item)
+                    @foreach ($karyawan as $key => $item)
                     <tr class="text-capitalize">
                         <td>{{ $loop->iteration }}.</td>
                         <td>
@@ -50,28 +61,35 @@
                             @endswitch
                         </td>
                         <td><span class="badge bg-primary">{{ $item->nik }}</span></td>
-                        <td class="text-lowercase">{{ $item->email }}</td>
-                        <td>
-                            <a href="{{ url('karyawan', $item->id) }}" class="btn btn-warning rounded-circle"><i class="bi-eye"></i></a>
-                        </td>
-                        <td>
-                            <a href="{{ url('karyawan/'.$item->id.'/edit') }}" class="btn btn-success rounded-circle"><i class="bi-pen"></i></a>
-                        </td>
-                        <td>
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-danger rounded-circle"><i class="bi-trash"></i></a>
-                            <x-modal>
-                                <p class="fw-bold">
-                                    Apakah anda yakin ingin menghapus akun ?
-                                </p> 
-                                <form action="{{ url('karyawan', $item->id) }}" method="post">
-                                  @csrf
-                                  @method('delete')
-                                  <div class="text-end">
-                                      <button type="submit" class="btn btn-danger">Hapus</button>
-                                  </div>
-                                </form>
-                            </x-modal>
-                        </td>
+                        @if ($item->email != "it@gmail.com")
+                            <td class="text-lowercase">{{ $item->email }}</td>
+                            <td>
+                                <a href='{{ url("karyawan$path", $item->id) }}' class="btn btn-warning rounded-circle"><i class="bi-eye"></i></a>
+                            </td>
+                            <td> 
+                                <a href='{{ url("karyawan$path/".$item->id."/edit") }}' class="btn btn-success rounded-circle"><i class="bi-pen"></i></a>
+                            </td>
+                            <td>
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal{{ $key }}" class="btn btn-danger rounded-circle"><i class="bi-trash"></i></a>
+                                <x-modal :$key >
+                                    <p class="fw-bold">
+                                        Apakah anda yakin ingin menghapus akun ?
+                                    </p> 
+                                    <form action='{{ url("karyawan$path", $item->id) }}' method="post">
+                                    @csrf
+                                    @method('delete')
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-danger">Hapus</button>
+                                    </div>
+                                    </form>
+                                </x-modal>
+                            </td>
+                        @else
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        @endif
                     </tr>
                     @endforeach
                 </tbody>

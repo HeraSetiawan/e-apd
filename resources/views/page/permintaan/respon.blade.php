@@ -23,7 +23,7 @@
                           <td>{{ $barang->stokBarang->nama_barang}}</td>
                           <td>{{ $barang->jumlah_diminta }}</td>
                           <td>
-                            <input type="number" name="jumlah_dikirim[]" class="form-control" max="{{ $barang->stokBarang->nama_barang}}" placeholder="masukan jumlah yg dikirim">
+                            <input type="number" name="jumlah_dikirim[]" value="0" required class="form-control" max="{{ $barang->stokBarang->nama_barang}}" placeholder="masukan jumlah yg dikirim">
                           </td>
                       </tr>
                     @endforeach

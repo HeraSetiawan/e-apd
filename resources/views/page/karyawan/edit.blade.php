@@ -1,7 +1,17 @@
 <x-template-app>
+    @php
+    switch (auth()->user()->role) {
+        case 'SS':
+            $path = '/admin';
+        break;
+        default:
+            $path = '';
+        break;
+    }   
+    @endphp
     <x-card judul='Tambah Admin'>
         <h3 id="judul" class="text-uppercase"> Data Akun</h3>
-        <form action="{{ url('karyawan', $karyawan->id) }}" method="post" enctype="multipart/form-data">
+        <form action="{{ url("karyawan$path", $karyawan->id) }}" method="post" enctype="multipart/form-data">
             @method('put')
         @csrf
         <section id="part1">

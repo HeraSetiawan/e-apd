@@ -2,18 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BarangPermintaan;
+use App\Models\Permintaan;
 use App\Models\StokBarang;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StokBarangController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    function lokasiUser()  {
+        return Auth::user()->asal_rig;
+    }
+    
     public function index()
     {
-        return view('page.stokbarang.index', ['stokbarang' => StokBarang::latest()->get()]);
+        $stokbarang = StokBarang::latest()->get();
+        // dd($stokbarang);
+        return view('page.stokbarang.index', compact('stokbarang'));
+    }
+
+    function indexAdmin() {
+        $permintaan = Permintaan::where('asal_rig', $this->lokasiUser())
+                                    ->where('status', "3")->select('id')->get();
+        $stokBarang = BarangPermintaan::with('stokBarang')->whereIn('permintaan_id', $permintaan->pluck('id'))->get();
+        // dd($stokBarang);
+        return view('page.stokbarang.index_admin', compact('stokBarang'));
     }
 
     /**
@@ -45,6 +59,7 @@ class StokBarangController extends Controller
             "qty_barang_masuk" => $request->qty_barang_masuk,
             "tanggal_masuk" => $request->tanggal_masuk,
             "nama_penerima" => $request->nama_penerima,
+            "lokasi" => $request->lokasi,
         ]);
 
         return redirect('/stokbarang')->with('pesan', "berhasil tambah $request->nama_barang")->with('warna', 'success');
@@ -89,6 +104,7 @@ class StokBarangController extends Controller
             "qty_barang_masuk" => $request->qty_barang_masuk,
             "tanggal_masuk" => $request->tanggal_masuk,
             "nama_penerima" => $request->nama_penerima,
+            "lokasi" => $request->lokasi,
         ]);
 
         return redirect('/stokbarang ')->with('pesan', "berhasil update $stokBarang->nama_barang")->with('warna','info');

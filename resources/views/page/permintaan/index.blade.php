@@ -3,6 +3,7 @@
         <x-alert :pesan="session('pesan')" :warna="session('warna')" />
     @endif
     <x-card judul="Permintaan Barang">
+        <a href="{{ asset('assets/dokumen/pengeluaran_apd.jpeg') }}" download class="btn btn-primary float-end mb-3"><i class="bi-download"></i> file pengiriman barang </a>
       @foreach ($permintaan as $key => $item)
         <div class="accordion accordion-flush" id="accordionFlushExample">
           <div class="accordion-item">
@@ -18,20 +19,17 @@
                       <b class="ms-auto">
                         Status : 
                         @switch($item->status)
-                            @case(5)
-                              <span class="badge bg-primary">Di tolak</span>
-                            @break
                             @case(1)
                               <span class="badge bg-primary">Di Proses</span>
                             @break
                             @case(2)
-                              <span class="badge bg-primary">Di Kemas</span>
-                            @break
-                            @case(3)
                               <span class="badge bg-primary">Di Kirim</span>
                             @break
-                            @case(4)
+                            @case(3)
                               <span class="badge bg-primary">Di Terima</span>
+                            @break
+                            @case(4)
+                              <span class="badge bg-primary">Di Tolak</span>
                             @break
                             @default
                               <span class="badge bg-primary">Aktif</span>
@@ -68,6 +66,24 @@
               </div>
             </div>
           </div>
+          @if (Auth::user()->role == "AS")
+            <form action="{{ route('update permintaan asisten', $item->id) }}" method="post" enctype="multipart/form-data">
+              @csrf
+              @method('patch')
+              <div class="mb-3">
+                <label for="" class="form-label">File Pengiriman barang</label>
+                <input type="file" class="form-control" name="file_pengiriman" />
+                <small id="helpId" class="form-text text-muted">silahkan upload kembali file pengiriman yang sudah di isi</small>
+              </div>
+              <button type="submit" class="btn btn-primary "><i class="bi-send"></i> Kirim</button>
+            </form>
+          @endif
+          
+          @if (Auth::user()->role == "SA" || Auth::user()->role == "SS")
+            @if ($item->file_pengiriman != null)
+              <a href="{{ asset($item->file_pengiriman) }}" download class="btn btn-outline-danger"><i class="bi-download"></i> File Pengiriman</a>
+            @endif
+          @endif
         </div>
       @endforeach
       <x-slot name='tombolFooter'>

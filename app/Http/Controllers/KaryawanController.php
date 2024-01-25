@@ -8,18 +8,31 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Requests\StoreKaryawanRequest;
 use App\Http\Requests\UpdateKaryawanRequest;
+use Illuminate\Support\Facades\Auth;
 
 class KaryawanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
+    function getLokasiUser() {
+        return Auth::user()->asal_rig;
+    }
+
     public function index()
     {
         $exclude_column = ['password'];
         $columns = Schema::getColumnListing('karyawan');
         $selectedColumns = array_diff($columns, $exclude_column);
        return view('page.karyawan.index', ['karyawan' => Karyawan::select($selectedColumns)->latest()->get()]);
+    }
+
+    public function indexAdmin()
+    {
+        $exclude_column = ['password'];
+        $columns = Schema::getColumnListing('karyawan');
+        $selectedColumns = array_diff($columns, $exclude_column);
+        $karyawan = Karyawan::where('asal_rig', $this->getLokasiUser())->select($selectedColumns)->latest()->get();
+        // dd($karyawan);
+       return view('page.karyawan.index', compact('karyawan'));
     }
     
     /**
@@ -187,9 +200,9 @@ class KaryawanController extends Controller
      */
     public function destroy(Karyawan $karyawan)
     {
-        // unlink($karyawan->foto);
+        unlink($karyawan->foto);
         Karyawan::destroy($karyawan->id);
         return redirect('/karyawan')->with('pesan', "Berhasil hapus data pengguna $karyawan->nama_lengkap")
-            ->with('color', 'danger');
+            ->with('warna', 'danger');
     }
 }

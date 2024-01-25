@@ -2,18 +2,12 @@
     <img src="{{ asset('assets/gambar/logo.png') }}" class="d-block mx-auto" width="100">
     <h2><i class="bi-buildings-fill"></i> Selamat datang di Aplikasi MyHSEPDS</h2>
     <p class="lead text-capitalize">Pertamina drilling service Indonesia project Sumatera bagian selatan</p>
-    @if (session('username'))
-      <x-alert warna="danger" :pesan="session('username')" />
+    @if (session('pesan'))
+      <x-alert warna="danger" :pesan="session('pesan')" />
     @endif
     
     <div class="card shadow">
-      @if ($errors->any())
-          <li>
-            @foreach ($errors->all() as $item)
-                <li>{{ $item }}</li>
-            @endforeach
-          </li>
-      @endif
+
         <div class="card-header">
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
@@ -28,15 +22,21 @@
           </ul>
         </div>
         <div class="card-body">
-          <h5 class="card-title">
-            @if ($link == 'admin')
-            <i class="bi-person"></i>
-            @else
-            <i class="bi-people"></i>
-            @endif
-             Login
-        </h5>
-          <p class="card-text">silahkan login untuk menggunakan aplikasi</p>
+          @if ($link != 'info')
+            <h5 class="card-title">
+              @if ($link == 'admin')
+              <i class="bi-person"></i>
+              @else
+              <i class="bi-people"></i>
+              @endif
+              Login
+            </h5>
+            <p class="card-text">silahkan login untuk menggunakan aplikasi</p>
+          @else
+            <h4 class="card-title text-center my-0"><i class="bi-volume-down"></i> Pedoman Penggunaan APD</h4>
+            <p class="card-subtitle text-center text-muted">Karena keselamataan anda adalah prioritas kami</p>
+            <hr>
+          @endif
           <form action="{{ url('login') }}" method="post">
             @csrf
             <div class="mb-3">
@@ -48,12 +48,19 @@
                 <input type="text" class="form-control" name="username" placeholder="masukan nik anda">
                 @endif
             </div>
-            <div class="mb-3">
-              <label class="form-label">Password</label>
-              <input type="password" class="form-control" name="password" placeholder="masukan password anda">
-            </div>
-            <button type="submit" class="btn btn-primary float-end">Submit</button>
+            @if ($link != 'info')
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" placeholder="masukan password anda">
+              </div>
+              <button type="submit" class="btn btn-primary float-end">Submit</button>
+            @else
+              <img src="{{ asset('assets/gambar/APD-tenaga-kerja.jpg') }}" class="img-fluid d-block mx-auto" width="500" alt="">
+            @endif
           </form>
         </div>
       </div>
 </div>
+<footer style="height: 10px">
+
+</footer>

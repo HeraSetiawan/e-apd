@@ -15,19 +15,31 @@ class LoginController extends Controller
             'password' => ['required'],
         ]);
         $fieldType = filter_var($credentials['username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'nik';
-        // dd($fieldType);
         
         if (Auth::attempt([$fieldType => $credentials['username'], 'password' => $credentials['password']])) {
             $request->session()->regenerate();
-        
-            return redirect()->intended('dashboard');
+            
+            $userRole = Auth::user()->role;
+            
+            switch ($userRole) {
+                case 'SA':
+                    return redirect()->intended('dashboard');
+                break;
+                case 'SS':
+                    return redirect()->intended('dashboard/admin');
+                break;
+                case 'AS':
+                    return redirect()->intended('permintaan/asisten');
+                break;
+                case 'KRU':
+                    return redirect()->intended('dashboard/kru');
+                break;
+            }
+
         }
         
  
-        return back()->withErrors([
-            'username' => 'Data yang anda masukan tidak ada pada database kami .',
-            'password' => 'password salah.',
-        ]);
+        return back()->with('pesan', 'Data yang anda masukan tidak ada pada database kami .');
     }
 
     public function logout(Request $request): RedirectResponse

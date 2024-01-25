@@ -10,9 +10,11 @@
                     <label for="role" class="form-label">Role Akses</label>
                     <select class="form-select" name="role" id="role">
                         <option disabled selected>--Pilih Satu--</option>
-                        <option @selected(old('role') == 'SA') value="SA">Super Admin</option>
-                        <option @selected(old('role') == 'SS') value="SS">ADMIN</option>
-                        <option @selected(old('role') == 'AS') value="AS">Asisten</option>
+                        @if (Auth::user()->role == "SA")
+                            <option @selected(old('role') == 'SA') value="SA">Super Admin</option>
+                            <option @selected(old('role') == 'SS') value="SS">ADMIN</option>
+                            <option @selected(old('role') == 'AS') value="AS">Asisten</option>
+                        @endif
                         <option @selected(old('role') == 'KRU') value="KRU">KRU</option>
                     </select>
                 </div>
@@ -68,7 +70,7 @@
                             <option @selected(old('asal_rig') == 'PDSI#36.1/SKTYOP650-M') value="PDSI#36.1/SKTYOP650-M">PDSI#36.1/SKTYOP650-M</option>
                             <option @selected(old('asal_rig') == 'PML') value="PML">PML</option>
                             <option @selected(old('asal_rig') == 'HTE') value="HTE">HTE</option>
-                            <option @selected(old('asal_rig') == 'KANTOR') value="KANTOR">KANTOR</option>
+                            <option @selected(old('asal_rig') == 'KANTOR') value="KANTOR">KANTOR / Gudang Pusat</option>
                         </x-select>
                     </div>
                     <div class="col-lg-6">

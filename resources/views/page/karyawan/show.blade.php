@@ -5,9 +5,9 @@ function tgl($tgl) {
 @endphp
 <x-template-app>
     <x-card judul='Detail Karyawan'>
-        <x-slot name='tombol'>
+        {{-- <x-slot name='tombol'>
             <a class="btn btn-primary" href="{{ url('/karyawan') }}"><i class="bi-arrow-left"></i> Kembali</a>
-        </x-slot>
+        </x-slot> --}}
         <table class="table">
             <tr>
                 <td colspan="3">
@@ -24,11 +24,11 @@ function tgl($tgl) {
                   <td>:</td>
                   <td>{{ $karyawan->nik }}</td>
                 </tr>
-                <tr class="text-uppercase">
+                {{-- <tr class="text-uppercase">
                   <td>role</td>
                   <td>:</td>
                   <td>{{ $karyawan->role }}</td>
-                </tr>
+                </tr> --}}
                 <tr class="text-uppercase">
                   <td>email</td>
                   <td>:</td>

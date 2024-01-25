@@ -4,32 +4,56 @@ namespace App\Http\Controllers;
 
 use App\Models\Permintaan;
 use App\Models\StokBarang;
-use App\Models\BarangKeluar;
 use Illuminate\Http\Request;
 use App\Models\BarangPermintaan;
+use App\Models\StokArea;
+use Illuminate\Support\Facades\Auth;
 
 class PermintaanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    function lokasiUser()  {
+        return Auth::user()->asal_rig;
+    }
+
     public function index()
     {
         $permintaan = Permintaan::with('barang_permintaan.stokBarang')->latest()->paginate(10);
         return view('page.permintaan.index', compact('permintaan'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    function indexAsisten() {
+        $permintaan = Permintaan::with('barang_permintaan.stokBarang')->where('status',"1")->paginate(5);
+        // dd($permintaan);
+        return view('page.permintaan.index', compact('permintaan'));
+    }
+
+    public function indexAdmin()
+    {
+        $permintaan = Permintaan::with('barang_permintaan.stokBarang')->where('asal_rig', auth()->user()->asal_rig)->orderBy('id', 'DESC')->get();
+        // dd($permintaan);
+        return view('page.permintaan.show', compact('permintaan'));
+    }
+
+    public function indexKru()
+    {
+        return view('page.permintaan.kru');
+    }
+
     public function create()
     {
         return view('page.permintaan.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function createKru()
+    {
+        $permintaan = Permintaan::where('asal_rig', $this->lokasiUser())
+                                    ->where('status', "3")->select('id')->get();
+        $stokBarang = BarangPermintaan::with('stokBarang')->whereIn('permintaan_id', $permintaan->pluck('id'))->get();
+        return view('page.stokbarang.pemberian_apd', compact('stokBarang'));
+    }
+
+    
     public function store(Request $request)
     {
         $file_permintaan = $request->file_permintaan->store('dokumen');
@@ -50,25 +74,11 @@ class PermintaanController extends Controller
             ]);
         }
 
-        return redirect("/permintaan/$permintaanId")
+        return redirect("/permintaan/admin")
             ->with('pesan','berhasil mengirim permintaan')
             ->with('warna', 'success');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show()
-    {
-        $permintaan = Permintaan::where('asal_rig', auth()->user()->asal_rig)
-            ->latest()->first();
-        // dd(auth()->user()->asal_rig);
-        return view('page.permintaan.show', compact('permintaan'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Permintaan $permintaan)
     {
         return view('page.permintaan.edit');
@@ -77,14 +87,22 @@ class PermintaanController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Permintaan $permintaan)
+    public function updateAsisten(Request $req,$id)
     {
-        //
+        Permintaan::where('id', $id)->update([
+            'file_pengiriman' => $req->file_pengiriman->store('dokumen/pengiriman'),
+            'status' => "2",
+        ]);
+
+        return redirect('/permintaan/asisten')->with('pesan')
+            ->with('pesan','berhasil mengirim file')
+            ->with('warna', 'success');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function updateKru($id) {
+        
+    }
+
     public function destroy(Permintaan $permintaan)
     {
         //
@@ -117,5 +135,33 @@ class PermintaanController extends Controller
         return redirect('/permintaan')
                 ->with('pesan', 'Berhasil kirim, jumlah stok akan otomatis berkurang')
                 ->with('warna', 'success');
+    }
+
+    function tolak($id) {
+        Permintaan::where('id', $id)->update([
+            'status' => "4",
+        ]);
+
+        return redirect('/permintaan')
+                ->with('pesan', 'Berhasil tolak permintaan')
+                ->with('warna', 'danger');
+    }
+
+    function terima(Request $request) {
+        
+        foreach ($request->nama_barang as $key => $value) {
+            StokArea::create([
+                'nama_barang' => $value,
+                'qty' => $request->qty[$key],
+                'lokasi' => $request->lokasi, 
+            ]);
+        }
+        Permintaan::where('id', $request->id)->update([
+            'status' => "3",
+        ]);
+        
+        return redirect('permintaan/admin')
+                ->with('pesan', 'Berhasil selesaikan pesanan')
+                ->with('warna', 'info');
     }
 }

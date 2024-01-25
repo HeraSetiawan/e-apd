@@ -16,7 +16,7 @@
                     <x-input name='nama_penerima' type='text' :value="old('nama_penerima')" />
                 </div>
             </div>
-            <x-input name='lokasi' type='text' attribute='readonly'/>
+            <x-input name='lokasi' type='text' value="{{ Auth::user()->asal_rig }}" attribute='readonly'/>
             <button
                 type="submit"
                 class="btn btn-primary float-end"

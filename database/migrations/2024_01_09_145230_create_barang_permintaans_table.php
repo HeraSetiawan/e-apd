@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('permintaan_id')->constrained('permintaan');
             $table->foreignId('stok_barang_id')->constrained('stok_barang');
             $table->integer('jumlah_diminta');
-            $table->integer('jumlah_dikeluarkan')->de();
+            $table->integer('jumlah_dikeluarkan')->nullable();
             $table->timestamps();
         });
     }
