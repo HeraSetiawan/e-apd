@@ -9,7 +9,7 @@
         break;
     }   
     @endphp
-    <x-card judul='Tambah Admin'>
+    <x-card judul='Edit Admin'>
         <h3 id="judul" class="text-uppercase"> Data Akun</h3>
         <form action="{{ url("karyawan$path", $karyawan->id) }}" method="post" enctype="multipart/form-data">
             @method('put')
@@ -75,7 +75,7 @@
                             <option @selected(old('asal_rig', $karyawan->asal_rig) == 'PDSI#36.1/SKTYOP650-M') value="PDSI#36.1/SKTYOP650-M">PDSI#36.1/SKTYOP650-M</option>
                             <option @selected(old('asal_rig', $karyawan->asal_rig) == 'PML') value="PML">PML</option>
                             <option @selected(old('asal_rig', $karyawan->asal_rig) == 'HTE') value="HTE">HTE</option>
-                            <option @selected(old('asal_rig', $karyawan->asal_rig) == 'KANTOR') value="KANTOR">KANTOR</option>                             
+                            <option @selected(old('asal_rig', $karyawan->asal_rig) == 'KANTOR_PML_SBS_GUDANG') value="KANTOR_PML_SBS_GUDANG">KANTOR / Gudang SBS & PML</option>
                         </x-select>
                     </div>
                     <div class="col-lg-6">

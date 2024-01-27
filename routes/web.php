@@ -1,12 +1,18 @@
 <?php
 
-use App\Http\Controllers\KaryawanController;
+use App\Models\Karyawan;
+use App\Models\StokArea;
+use App\Models\Permintaan;
+use App\Http\Livewire\Login;
+use App\Models\RiwayatApdKru;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\PermintaanController;
 use App\Http\Controllers\StokBarangController;
-use App\Http\Livewire\Login;
-use App\Models\Karyawan;
-use Illuminate\Support\Facades\Route;
+use App\Models\BarangPermintaan;
+use App\Models\StokBarang;
 
 // Guest
 Route::get('/', Login::class);
@@ -19,7 +25,27 @@ Route::controller(LoginController::class)->group(function(){
 Route::middleware(['auth'])->group(function(){
 
     Route::get('dashboard',function(){
-        return view('page.dashboard');
+        // chart donat
+        $permintaan = Permintaan::groupBy('asal_rig')->select('asal_rig', DB::raw('count(*) as total'))
+            ->get()->pluck('total', 'asal_rig');
+        $jsonPermintaan = $permintaan->toJson();
+
+        // data total
+        $jumlah_kru = Karyawan::count('id');
+        $jumlah_stok = StokBarang::sum('qty_barang_masuk');
+
+        // chart bagan
+        $topValues = BarangPermintaan::join('stok_barang', 'barang_permintaan.stok_barang_id', '=', 'stok_barang.id')
+        ->tahun(request('keyTahun') ?? date('Y'))->bulan(request('keyBulan') ?? date('m'))
+        ->groupBy('stok_barang_id', 'stok_barang.nama_barang') // Tambahkan 'stok_barang.nama_barang' ke dalam GROUP BY
+        ->orderByRaw('COUNT(*) DESC')
+        ->take(10)
+        ->get(['stok_barang_id', 'stok_barang.nama_barang', DB::raw('COUNT(*) as total')]);
+    
+        $dataChart = $topValues->pluck('total', 'nama_barang');
+        $top10 = $dataChart->toJson();
+        // dd($dataChart);
+        return view('page.dashboard', compact('jsonPermintaan', 'jumlah_kru', 'jumlah_stok','top10'));
     })->name('dashboard');
 
     
@@ -33,10 +59,6 @@ Route::middleware(['auth'])->group(function(){
             return view('page.dashboard_kru', ['karyawan' => Karyawan::find(auth()->user()->id)]);
         })->name('dashboard kru');
 
-        Route::get('/permintaan/kru',function(){
-            return view('page.permintaan.kru');
-        });
-
         Route::get('/permintaan/kru',[PermintaanController::class, 'indexKru']);
         Route::put('/permintaan/kru/{id}',[PermintaanController::class, 'updateKru']);
     });
@@ -46,7 +68,10 @@ Route::middleware(['auth'])->group(function(){
     Route::middleware("cekRole:SS")->group(function(){
 
         Route::get('/dashboard/admin', function(){
-            return view('page.dashboard_admin', ['karyawan' => Karyawan::find(auth()->user()->id)]);
+            $karyawan = Karyawan::find(auth()->user()->id);
+            $jumlah_kru = Karyawan::where('asal_rig', auth()->user()->asal_rig)->count('id');
+            $jumlah_stok = StokArea::where('lokasi', auth()->user()->asal_rig)->sum('qty');
+            return view('page.dashboard_admin', compact('karyawan', 'jumlah_kru', 'jumlah_stok'));
         })->name('dashboard admin');
 
         // karyawan
@@ -70,7 +95,11 @@ Route::middleware(['auth'])->group(function(){
 
         // Riwayat Apd
         Route::get('/riwayat/admin/apd', function(){
-            return view('');
+            return view('page.riwayat.index_admin', [
+                'riwayat' => RiwayatApdKru::join('karyawan', 'karyawan.id', '=', 'riwayat_apd_kru.karyawan_id')
+                ->where('karyawan.asal_rig', auth()->user()->asal_rig)
+                ->get() 
+            ]);
         });
     });
     // --end admin area--
@@ -81,7 +110,7 @@ Route::middleware(['auth'])->group(function(){
         Route::patch('/permintaan/{id}',[PermintaanController::class, 'updateAsisten'])->name('update permintaan asisten');
     });
 
-    // super admin
+    // --super admin--
     Route::middleware("cekRole:SA")->group(function(){
         
         // karyawan
@@ -92,8 +121,6 @@ Route::middleware(['auth'])->group(function(){
         Route::get('/karyawan/{karyawan}/edit',[KaryawanController::class, 'edit']);
         Route::put('/karyawan/{karyawan}',[KaryawanController::class, 'update']);
         Route::delete('/karyawan/{karyawan}',[KaryawanController::class,'destroy']);
-
-       
 
         // stok barang kontroller
         Route::controller(StokBarangController::class)->group(function(){
@@ -118,8 +145,11 @@ Route::middleware(['auth'])->group(function(){
                 Route::post('respon','kirimBarang')->name('kirim barang');
             });
         });
-    });
 
+        // riwayat
+        Route::get('/riwayat', [StokBarangController::class,'riwayat']);
+    });
+// --super admin--
 
     
     });

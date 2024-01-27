@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     @stack('style')
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
   </head>
   <body>
 <header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow bg-gradient" style="background-color: darkcyan">
@@ -22,7 +23,16 @@
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="navbar-nav">
-    <div class="nav-item text-nowrap">
+    <div class="nav-item text-nowrap hstack">
+      <div class="position-relative">
+        <a href="{{ url('/permintaan') }}">
+          <i class="bi-bell-fill text-light fs-4">
+          </i>
+          <span class="badge bg-danger rounded-circle position-absolute start-100 translate-middle top-0 mt-2 ">
+            {{ \App\Models\Permintaan::where('status', "0")->count() }}
+          </span>
+        </a>
+      </div>
       <form action="{{ url('logout') }}" method="post">
         @csrf
         <button type="submit" class="btn border-0 nav-link px-3 btn-outline-success rounded-0 text-light"><i class="bi-power"></i> Sign out</button>
@@ -43,14 +53,14 @@
         @endif
           <h5 class="text-capitalize">{{ Auth::user()->nama_lengkap }}</h5>
           <span class="badge bg-success bg-gradient mx-5">{{ Auth::user()->jabatan }}</span>
-          <div class="text-center">{{ Auth::user()->asal_rig }}</div>
+          <div class="text-center badge bg-secondary mx-4">{{ Auth::user()->asal_rig }}</div>
           <hr>
         </div>
         <ul class="nav  flex-column">
           
           @if (Auth::user()->role === "SA")
           <li class="nav-item">
-            <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard') }}">
+            <a class="nav-link {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ url('dashboard') }}">
               <span data-feather="home" class="align-text-bottom"></span>
               Dashboard
             </a>
@@ -62,16 +72,22 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {{ Request::is('permintaan*') ? 'active' : '' }}" href="{{ route('permintaan') }}">
+            <a class="nav-link {{ Request::is('permintaan*') ? 'active' : '' }}" href="{{ url('permintaan') }}">
               <span data-feather="truck" class="align-text-bottom"></span>
               Permintaan APD
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ Request::is('riwayat*') ? 'active' : '' }}" href="{{ url('riwayat') }}">
+              <span data-feather="feather" class="align-text-bottom"></span>
+              Riwayat Pengeluaran
             </a>
           </li>
           @endif
 
           @if (Auth::user()->role === "SS")
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard/admin') }}">
+              <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{{ url('dashboard/admin') }}">
                 <span data-feather="home" class="align-text-bottom"></span>
                 Dashboard
               </a>
@@ -90,7 +106,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link {{ Request::is('riwayat*') ? 'active' : '' }}" href="{{ url('riwayat/admin/apd') }}">
-                <span data-feather="truck" class="align-text-bottom"></span>
+                <span data-feather="book-open" class="align-text-bottom"></span>
                 Riwayat Permintaan APD
               </a>
             </li>
@@ -107,13 +123,13 @@
           
           @if (Auth::user()->role === "KRU")
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" aria-current="page" href="{{ url('dashboard/kru') }}">
+              <a class="nav-link {{ Request::is('dashboard*') ? 'active' : '' }}" href="{{ url('dashboard/kru') }}">
                 <span data-feather="home" class="align-text-bottom"></span>
                 Dashboard
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link {{ Request::is('permintaan*') ? 'active' : '' }}" aria-current="page" href="{{ url('permintaan/kru') }}">
+              <a class="nav-link {{ Request::is('permintaan*') ? 'active' : '' }}" href="{{ url('permintaan/kru') }}">
                 <span data-feather="feather" class="align-text-bottom"></span>
                 Riwayat Permintaan
               </a>
@@ -123,39 +139,6 @@
           
 
         </ul>
-
-        {{-- <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
-          <span>Saved reports</span>
-          <a class="link-secondary" href="#" aria-label="Add a new report">
-            <span data-feather="plus-circle" class="align-text-bottom"></span>
-          </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Current month
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Last quarter
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Social engagement
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <span data-feather="file-text" class="align-text-bottom"></span>
-              Year-end sale
-            </a>
-          </li>
-        </ul> --}}
       </div>
     </nav>
 
@@ -164,17 +147,35 @@
     </main>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var table = $('#dataTable').DataTable( {
+        lengthChange: false,
+        buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
+    } );
+ 
+    table.buttons().container()
+        .appendTo( '#dataTable_wrapper .col-md-6:eq(0)' );
+} );
+</script>
+
     <script src="https://getbootstrap.com/docs/5.2/dist/js/bootstrap.bundle.min.js" ></script>
       <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" ></script>
       <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
       <script src="https://getbootstrap.com/docs/5.2/examples/dashboard/dashboard.js"></script>
       @livewireScripts
       @stack('script')
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-<script>
-  new DataTable('#dataTable');
-</script>
+
   </body>
 </html>

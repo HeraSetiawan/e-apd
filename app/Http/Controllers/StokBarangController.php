@@ -67,9 +67,22 @@ class StokBarangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(StokBarang $stokBarang)
+    public function riwayat()
     {
-        //
+        $keyBulan = request('keyBulan');
+        $keyTahun = request('keyTahun');
+
+        if ($keyBulan && !$keyTahun) {
+            $listBarangKeluar = BarangPermintaan::with('permintaan','stokBarang')->bulan($keyBulan)->latest()->get();
+        } elseif(!$keyBulan && $keyTahun) {
+            $listBarangKeluar = BarangPermintaan::with('permintaan','stokBarang')->tahun($keyTahun)->latest()->get();
+        } elseif($keyBulan && $keyTahun) {
+            $listBarangKeluar = BarangPermintaan::with('permintaan','stokBarang')->bulan($keyBulan)->tahun($keyTahun)->latest()->get();
+        } else {
+            $listBarangKeluar = BarangPermintaan::with('permintaan','stokBarang')->latest()->get(); 
+        }
+         
+        return view('page.riwayat.index', compact('listBarangKeluar'));
     }
 
     /**

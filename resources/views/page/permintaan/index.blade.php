@@ -63,6 +63,14 @@
                         </tr>
                       @endforeach
                   </table>
+                  @if (Auth::user()->role == "SA" || Auth::user()->role == "SS")
+                    @if ($item->file_permintaan != null)
+                      <a href="{{ asset($item->file_permintaan) }}" download class="btn btn-outline-info"><i class="bi-download"></i> File Permintaan</a>
+                    @endif
+                    @if ($item->file_pengiriman != null)
+                      <a href="{{ asset($item->file_pengiriman) }}" download class="btn btn-outline-danger"><i class="bi-download"></i> File Pengiriman</a>
+                    @endif
+                  @endif
               </div>
             </div>
           </div>
@@ -77,12 +85,6 @@
               </div>
               <button type="submit" class="btn btn-primary "><i class="bi-send"></i> Kirim</button>
             </form>
-          @endif
-          
-          @if (Auth::user()->role == "SA" || Auth::user()->role == "SS")
-            @if ($item->file_pengiriman != null)
-              <a href="{{ asset($item->file_pengiriman) }}" download class="btn btn-outline-danger"><i class="bi-download"></i> File Pengiriman</a>
-            @endif
           @endif
         </div>
       @endforeach

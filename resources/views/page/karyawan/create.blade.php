@@ -1,7 +1,11 @@
 <x-template-app>
     <x-card judul='Tambah Admin'>
         <h3 id="judul" class="text-uppercase"> Data Akun</h3>
-        <form action="{{ url('karyawan') }}" method="post" enctype="multipart/form-data">
+        @if (auth()->user()->role == 'SS')
+            <form action="{{ url('karyawan/admin') }}" method="post" enctype="multipart/form-data">
+        @else
+            <form action="{{ url('karyawan') }}" method="post" enctype="multipart/form-data">
+        @endif
         @csrf
         <section id="part1">
                 @csrf
@@ -70,7 +74,7 @@
                             <option @selected(old('asal_rig') == 'PDSI#36.1/SKTYOP650-M') value="PDSI#36.1/SKTYOP650-M">PDSI#36.1/SKTYOP650-M</option>
                             <option @selected(old('asal_rig') == 'PML') value="PML">PML</option>
                             <option @selected(old('asal_rig') == 'HTE') value="HTE">HTE</option>
-                            <option @selected(old('asal_rig') == 'KANTOR') value="KANTOR">KANTOR / Gudang Pusat</option>
+                            <option @selected(old('asal_rig') == 'KANTOR_PML_SBS_GUDANG') value="KANTOR">KANTOR / Gudang SBS & PML</option>
                         </x-select>
                     </div>
                     <div class="col-lg-6">

@@ -90,6 +90,9 @@ class KaryawanController extends Controller
             'nama_relasi_darurat' => $request->nama_relasi_darurat,
         ]);
 
+        if (auth()->user()->role == 'SS') {
+            return redirect('/karyawan/admin')->with('pesan','Berhasil tambah Admin baru')->with('warna', 'info');
+        }
         return redirect('/karyawan')->with('pesan','Berhasil tambah Admin baru')->with('warna', 'info');
     }
 
@@ -192,6 +195,10 @@ class KaryawanController extends Controller
             'nama_relasi_darurat' => $request->nama_relasi_darurat,
         ]);
 
+        if (auth()->user()->role == 'SS') {
+            return redirect('/karyawan/admin')->with('pesan', "Berhasil update $karyawan->nama_lengkap")->with('warna','primary');
+        }
+
         return redirect('/karyawan')->with('pesan', "Berhasil update $karyawan->nama_lengkap")->with('warna','primary');
     }
 
@@ -202,6 +209,11 @@ class KaryawanController extends Controller
     {
         unlink($karyawan->foto);
         Karyawan::destroy($karyawan->id);
+        
+        if (auth()->user()->role == 'SS') {
+            return redirect('/karyawan/admin')->with('pesan', "Berhasil hapus data pengguna $karyawan->nama_lengkap")
+                ->with('warna', 'danger');
+        }
         return redirect('/karyawan')->with('pesan', "Berhasil hapus data pengguna $karyawan->nama_lengkap")
             ->with('warna', 'danger');
     }

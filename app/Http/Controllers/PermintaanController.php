@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\notifikasiEmail;
 use App\Models\Permintaan;
 use App\Models\StokBarang;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use App\Models\Karyawan;
 use App\Models\RiwayatApdKru;
 use App\Models\StokArea;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PermintaanController extends Controller
 {
@@ -32,14 +34,15 @@ class PermintaanController extends Controller
 
     public function indexAdmin()
     {
-        $permintaan = Permintaan::with('barang_permintaan.stokBarang')->where('asal_rig', auth()->user()->asal_rig)->orderBy('id', 'DESC')->get();
+        $permintaan = Permintaan::with('barang_permintaan.stokBarang')->where('asal_rig', auth()->user()->asal_rig)->orderBy('id', 'DESC')->paginate(3);
         // dd($permintaan);
         return view('page.permintaan.show', compact('permintaan'));
     }
 
     public function indexKru()
     {
-        return view('page.permintaan.kru');
+        $riwayat = RiwayatApdKru::with('karyawan')->where('karyawan_id', auth()->user()->id)->latest()->get();
+        return view('page.permintaan.kru', compact('riwayat'));
     }
 
     public function create()
@@ -76,6 +79,9 @@ class PermintaanController extends Controller
                 'jumlah_diminta'    => $request->jumlah_permintaan[$key],
             ]);
         }
+        $karyawan = Karyawan::where('role','SA')->select('role','email','asal_rig')->first();
+
+        Mail::to($karyawan->email)->send(new notifikasiEmail($karyawan->asal_rig));
 
         return redirect("/permintaan/admin")
             ->with('pesan','berhasil mengirim permintaan')

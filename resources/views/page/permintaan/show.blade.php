@@ -1,6 +1,7 @@
 <x-template-app>
     <x-card judul='Detail Permintaan'>
         <x-slot name="tombolFooter">
+            {{ $permintaan->links() }}
             <a
                 class="btn btn-primary float-end"
                 href="{{ url('permintaan/create') }}"
@@ -76,9 +77,20 @@
                     <div>
                         No. Pesanan : {{ $item->nomor }} <br>
                         Tgl. Pesanan : {{ $item->format_tanggal }}
+                        <hr>
                         <ol>
                             @foreach ($item->barang_permintaan as $barang)
-                                <li>{{ "Nama Barang: ". $barang->stokBarang->nama_barang ." -> Qty: ". $barang->jumlah_dikeluarkan }}</li>
+                                <li>
+                                    <ol>
+                                        Nama Barang: {{ $barang->stokBarang->nama_barang }}
+                                    </ol> 
+                                    <ol>
+                                        Qty diminta : {{ $barang->jumlah_diminta }}
+                                    </ol>
+                                    <ol>
+                                        Qty dikirim : {{ $barang->jumlah_dikeluarkan ?? '-'}}
+                                    </ol>
+                                </li>
                             @endforeach
                         </ol>
                     </div>

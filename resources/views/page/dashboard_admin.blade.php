@@ -5,9 +5,9 @@ function tgl($tgl) {
 @endphp
 <x-template-app>
   <div class="row">
+    <h3>Hi {{ Auth::user()->nama_lengkap }}, Selamat datang di Dashboard Admin</h3>
+    <hr>
     <div class="col-lg-8">
-      <h3>Hi {{ Auth::user()->nama_lengkap }}, Selamat datang di Dashboard Admin</h3>
-      <hr>
       <x-card judul='Detail Karyawan'>
           <table class="table">
               <tr>
@@ -189,6 +189,31 @@ function tgl($tgl) {
                   </tr>
           </table>
       </x-card>
+    </div>
+    <div class="col-lg-4">
+      <div class="hstack ps-5" style="width: auto;height: 200px;background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%); border-radius: 15px">
+      <div>
+        <h1 class="display-3">
+          <i class="bi-person"></i>
+        </h1>
+      </div>
+      <div>
+        <h5 class="ps-3 my-0">Jumlah Total Kru</h5>
+        <h2 class="ps-3 my-0">{{ $jumlah_kru }} Orang</h2>
+      </div>
+      </div>
+
+      <div class="hstack ps-5 mt-3" style="width: auto;height: 200px;background: linear-gradient(90deg, #e3ffe7 0%, #d9e7ff 100%); border-radius: 15px">
+      <div>
+        <h1 class="display-3">
+          <i class="bi-box2"></i>
+        </h1>
+      </div>
+      <div>
+        <h5 class="ps-3 my-0">Jumlah Total APD</h5>
+        <h2 class="ps-3 my-0">{{ $jumlah_stok }} Item</h2>
+      </div>
+      </div>
     </div>
   </div>
 </x-template-app>
