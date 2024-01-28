@@ -17,9 +17,9 @@ class UserSeeder extends Seeder
         DB::table('karyawan')->insert([
            'nama_lengkap' => 'IT Support', 
            'nik' => 'it43210',
-           'email' => 'it@gmail.com',
+           'email' => 'instruktur.laravel@gmail.com',
            'role' => 'SA',
-           'password' => Hash::make('superadmin43210'), 
+           'password' => Hash::make('superadmin1234'), 
         ]);
     }
 }

@@ -20,6 +20,7 @@ class LoginController extends Controller
             $request->session()->regenerate();
             
             $userRole = Auth::user()->role;
+        //    dd($userRole);
             
             switch ($userRole) {
                 case 'SA':
@@ -38,7 +39,6 @@ class LoginController extends Controller
 
         }
         
- 
         return back()->with('pesan', 'Data yang anda masukan tidak ada pada database kami .');
     }
 

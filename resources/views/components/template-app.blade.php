@@ -24,15 +24,17 @@
   </button>
   <div class="navbar-nav">
     <div class="nav-item text-nowrap hstack">
-      <div class="position-relative">
-        <a href="{{ url('/permintaan') }}">
-          <i class="bi-bell-fill text-light fs-4">
-          </i>
-          <span class="badge bg-danger rounded-circle position-absolute start-100 translate-middle top-0 mt-2 ">
-            {{ \App\Models\Permintaan::where('status', "0")->count() }}
-          </span>
-        </a>
-      </div>
+      @if (Auth::user()->role === 'SA')
+        <div class="position-relative">
+          <a href="{{ url('/permintaan') }}">
+            <i class="bi-bell-fill text-light fs-4">
+            </i>
+            <span class="badge bg-danger rounded-circle position-absolute start-100 translate-middle top-0 mt-2 ">
+              {{ \App\Models\Permintaan::where('status', "0")->count() }}
+            </span>
+          </a>
+        </div>
+      @endif
       <form action="{{ url('logout') }}" method="post">
         @csrf
         <button type="submit" class="btn border-0 nav-link px-3 btn-outline-success rounded-0 text-light"><i class="bi-power"></i> Sign out</button>
@@ -52,8 +54,9 @@
           <img src="https://placehold.co/75?text=Avatar" width="75" class="rounded-circle img-thumbnail d-block mx-auto" style="aspect-ratio:1/1">
         @endif
           <h5 class="text-capitalize">{{ Auth::user()->nama_lengkap }}</h5>
-          <span class="badge bg-success bg-gradient mx-5">{{ Auth::user()->jabatan }}</span>
-          <div class="text-center badge bg-secondary mx-4">{{ Auth::user()->asal_rig }}</div>
+          <span class="badge bg-success bg-gradient mx-5 text-uppercase mb-1">{{ Auth::user()->jabatan }}</span>
+          <div><small>Lokasi:</small></div>
+          <div class="text-center text-uppercase  mx-4">{{ Auth::user()->asal_rig }}</div>
           <hr>
         </div>
         <ul class="nav  flex-column">

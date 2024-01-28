@@ -46,7 +46,7 @@ Route::middleware(['auth'])->group(function(){
         $top10 = $dataChart->toJson();
         // dd($dataChart);
         return view('page.dashboard', compact('jsonPermintaan', 'jumlah_kru', 'jumlah_stok','top10'));
-    })->name('dashboard');
+    })->middleware('cekRole:SA')->name('dashboard');
 
     
     Route::get('/karyawan/biodata', function(){

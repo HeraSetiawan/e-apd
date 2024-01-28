@@ -120,7 +120,7 @@ class KaryawanController extends Controller
         if ($request->foto) {
             $foto = $request->foto->store('avatars'); //simpan foto
             $fileLama = public_path($request->old_foto); //cari lokasi foto lama
-            if (File::exist($fileLama)) {
+            if (File::exists($fileLama)) {
                 unlink($fileLama);
             } //hapus foto
         } else {
@@ -130,7 +130,7 @@ class KaryawanController extends Controller
         if ($request->hasil_mcu) {
             $hasil_mcu = $request->hasil_mcu->store('berkas');
             $fileLama = public_path($request->old_hasil_mcu);
-            if (File::exist($fileLama)) {
+            if (File::exists($fileLama)) {
                 unlink($fileLama);
             }
         } else {
@@ -140,7 +140,7 @@ class KaryawanController extends Controller
         if ($request->siml) {
             $siml = $request->siml->store('berkas');
             $fileLama = public_path($request->old_siml);
-            if (File::exist($fileLama)) {
+            if (File::exists($fileLama)) {
                 unlink($fileLama);
             }
         } else {
@@ -150,7 +150,7 @@ class KaryawanController extends Controller
         if ($request->hasil_bst) {
             $hasil_bst = $request->hasil_bst->store('berkas');
             $fileLama = public_path($request->old_hasil_bst);
-            if (File::exist($fileLama)) {
+            if (File::exists($fileLama)) {
                 unlink($fileLama);
             }
         } else {
