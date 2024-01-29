@@ -18,27 +18,23 @@
   </head>
   <body>
 <header class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow bg-gradient" style="background-color: darkcyan">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="{{ url('/dashboard') }}">{{ config('app.name') }}</a>
+  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">{{ config('app.name') }}</a>
+  @if (Auth::user()->role === 'SA')
+    <div class="position-relative me-auto ms-2">
+      <a href="{{ url('/permintaan') }}">
+        <i class="bi-bell-fill text-light fs-4">
+        </i>
+        <span class="badge bg-danger rounded-circle position-absolute start-100 translate-middle top-0 mt-2 ">
+          {{ \App\Models\Permintaan::where('status', "0")->count() }}
+        </span>
+      </a>
+    </div>
+  @endif
   <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="navbar-nav">
     <div class="nav-item text-nowrap hstack">
-      @if (Auth::user()->role === 'SA')
-        <div class="position-relative">
-          <a href="{{ url('/permintaan') }}">
-            <i class="bi-bell-fill text-light fs-4">
-            </i>
-            <span class="badge bg-danger rounded-circle position-absolute start-100 translate-middle top-0 mt-2 ">
-              {{ \App\Models\Permintaan::where('status', "0")->count() }}
-            </span>
-          </a>
-        </div>
-      @endif
-      <form action="{{ url('logout') }}" method="post">
-        @csrf
-        <button type="submit" class="btn border-0 nav-link px-3 btn-outline-success rounded-0 text-light"><i class="bi-power"></i> Sign out</button>
-      </form>
     </div>
   </div>
 </header>
@@ -138,7 +134,13 @@
               </a>
             </li>
           @endif
-
+            <hr>
+            <li class="nav-item">
+              <form action="{{ url('logout') }}" method="post">
+                @csrf
+                <button type="submit" class="btn border-0 px-3 fw-bolder rounded-0"><i class="bi-power"></i> Sign out</button>
+              </form>
+            </li>
           
 
         </ul>

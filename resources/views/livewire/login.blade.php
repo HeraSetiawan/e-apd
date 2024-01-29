@@ -1,7 +1,7 @@
 <div class="col-lg-6 mx-auto my-2">
     <img src="{{ asset('assets/gambar/logo.png') }}" class="d-block mx-auto" width="100">
     <h2 class="mx-2 mx-lg-0"><i class="bi-buildings-fill"></i> Selamat datang di Aplikasi MyHSEPDS</h2>
-    <p class="lead text-capitalize mx-2 ">Pertamina drilling service Indonesia project Sumatera bagian selatan</p>
+    <p class="lead text-capitalize mx-2 mx-2 mx-lg-0">Pertamina drilling service Indonesia project Sumatera bagian selatan Project SBS</p>
     @if (session('pesan'))
       <x-alert warna="danger" :pesan="session('pesan')" />
     @endif

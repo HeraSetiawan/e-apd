@@ -5,17 +5,22 @@
     <x-card judul="Permintaan Barang">
         <a href="{{ asset('assets/dokumen/pengeluaran_apd.jpeg') }}" download class="btn btn-primary float-end mb-3"><i class="bi-download"></i> file pengiriman barang </a>
       @foreach ($permintaan as $key => $item)
-        <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion accordion-flush " id="accordionFlushExample">
           <div class="accordion-item">
             <h2 class="accordion-header" id="flush-headingOne">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne{{ $key }}" aria-expanded="false" aria-controls="flush-collapseOne">
-                  <div class="hstack gap-4 col-10">
-                      <b>Nama Area : {{ $item->asal_rig }}</b>
-                      <div class="vr"></div>
-                      <b>Nomor : {{ $item->nomor }}</b>
-                      <div class="vr"></div>
-                      <b>Tanggal : {{ $item->format_tanggal }}</b>
-                      <div class="vr"></div>
+                  <div class="row gap-2 w-100 px-0">
+                    <div class="col-lg-4">
+                      <b>Area: {{ $item->asal_rig }}</b>
+                    </div>
+                      <div class="col-lg-2">
+                        <b>Nomor: {{ $item->nomor }}</b>
+                      </div>
+                    <div class="col-lg-3 hstack gap-1">
+                      
+                      <b>Tgl: {{ $item->format_tanggal }}</b>
+                    </div>
+                    <div class="col-lg-2">
                       <b class="ms-auto">
                         Status : 
                         @switch($item->status)
@@ -36,6 +41,8 @@
                             @break
                            @endswitch
                       </b>
+
+                    </div>
                   </div>
               </button>
             </h2>
@@ -47,22 +54,25 @@
                       <a href="{{ route('tolak permintaan', $item->id) }}" class=" btn btn-outline-danger rounded-pill"> <i class="bi bi-x"></i> Tolak</a>                        
                     @endif
                   </div>
-                  <table class="table table-sm">
-                      <tr>
-                          <th>No</th>
-                          <th>Nama Barang</th>
-                          <th>Diminta</th>
-                          <th>Dikeluarkan</th>
-                      </tr>
-                      @foreach ($item->barang_permintaan as $barang)
+                  <div class="table-responsive">
+                    <table class="table table-sm">
                         <tr>
-                            <td>{{ $loop->iteration }}.</td>
-                            <td>{{ $barang->stokBarang->nama_barang}}</td>
-                            <td>{{ $barang->jumlah_diminta }}</td>
-                            <td>{{ $barang->jumlah_dikeluarkan ?? "-" }}</td>
+                            <th>No</th>
+                            <th>Nama Barang</th>
+                            <th>Diminta</th>
+                            <th>Dikeluarkan</th>
                         </tr>
-                      @endforeach
-                  </table>
+                        @foreach ($item->barang_permintaan as $barang)
+                          <tr>
+                              <td>{{ $loop->iteration }}.</td>
+                              <td>{{ $barang->stokBarang->nama_barang}}</td>
+                              <td>{{ $barang->jumlah_diminta }}</td>
+                              <td>{{ $barang->jumlah_dikeluarkan ?? "-" }}</td>
+                          </tr>
+                        @endforeach
+                    </table>
+
+                  </div>
                   @if (Auth::user()->role == "SA" || Auth::user()->role == "SS")
                     @if ($item->file_permintaan != null)
                       <a href="{{ asset($item->file_permintaan) }}" download class="btn btn-outline-info"><i class="bi-download"></i> File Permintaan</a>
@@ -87,6 +97,7 @@
             </form>
           @endif
         </div>
+        <hr>
       @endforeach
       <x-slot name='tombolFooter'>
         {{ $permintaan->links() }}

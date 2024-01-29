@@ -93,12 +93,12 @@ function dynamicBackground(context) {
           </script>
     @endpush
     <form action="" method="get">
-    <div class="hstack gap-2">
-        <div id="judul">
+    <div class="row px-0 mt-2">
+        <div id="judul" class="col-12 col-lg-6">
             <h3 style="font-family: Arial, Helvetica, sans-serif" class="my-0">Selamat Datang, {{ Auth::user()->nama_lengkap }} </h3>
             <p style="font-family: Arial, Helvetica, sans-serif" class="text-muted">Dashboard Super Admin</p>
         </div>
-        <div class="ms-auto">
+        <div class="col-12 col-lg-6 hstack gap-2">
             <div>
               <x-select name="keyBulan" label="Pilih Bulan">
                 <option @selected(request('keyBulan') == "01") value="01">Januari</option>
@@ -115,18 +115,15 @@ function dynamicBackground(context) {
                 <option @selected(request('keyBulan') == "12") value="12">Desember</option>
             </x-select>
             </div>
+            <div class="mb-3">
+              <label for="" class="form-label">Tahun</label>
+              <input type="number" value="{{ request('keyTahun') }}" name="keyTahun" class="form-control" placeholder="masukan tahun">
+            </div>
+            <button type="submit" class="btn btn-primary border-0 bg-gradient mt-2 col-lg-1">
+                <i class="bi-search"></i>
+            </button>
+            <a href="{{ url('dashboard') }}" class="btn btn-success mt-2 col-lg-1"><i class="bi-arrow-counterclockwise"></i></a>
         </div>
-        <div class="mb-3">
-          <label for="" class="form-label">Tahun</label>
-          <input type="number" value="{{ request('keyTahun') }}" name="keyTahun" class="form-control" placeholder="masukan tahun">
-        </div>
-        <button
-            type="submit"
-            class="btn btn-primary border-0 bg-gradient mt-2"
-        >
-            <i class="bi-search"></i>
-        </button>
-        <a href="{{ url('dashboard') }}" class="btn btn-success mt-2"><i class="bi-arrow-counterclockwise"></i></a>
       </div>
     </form>
         <hr>
